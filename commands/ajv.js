@@ -4,14 +4,15 @@ var Ajv = require('ajv');
 var options = require('./options');
 var util = require('./util');
 var path = require('path');
+var request = require('request-promise');
 
-var loadSchema = (uri) => {
+var loadSchema = function (uri) {
     return request.json(uri).then(function (res) {
         if (res.statusCode >= 400)
             throw new Error('Loading error: ' + res.statusCode);
         return res.body;
     });
-}
+};
 
 module.exports = function (argv) {
     var opts = options.get(argv);
