@@ -5,11 +5,19 @@ var options = require('./options');
 var util = require('./util');
 var path = require('path');
 
+var loadSchema = (uri) => {
+    return request.json(uri).then(function (res) {
+        if (res.statusCode >= 400)
+            throw new Error('Loading error: ' + res.statusCode);
+        return res.body;
+    });
+}
 
 module.exports = function (argv) {
     var opts = options.get(argv);
     opts.schemaId = 'auto';
     if (argv.o) opts.sourceCode = true;
+    opts.loadSchema = loadSchema;
     var ajv = new Ajv(opts);
     var invalid;
     ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
